@@ -2,6 +2,7 @@ const Ride = require('../models/Ride');
 const RideRequest = require('../models/RideRequest');
 const User = require('../models/User');
 const { getIO } = require('../sockets');
+const { getRouteSummary } = require('../services/map.service');
 
 async function requestRide(req, res) {
   const { rideId, pickupLocation, dropoffLocation } = req.body;
@@ -11,12 +12,21 @@ async function requestRide(req, res) {
     return res.status(400).json({ message: 'Ride not available' });
   }
 
+  let fare = ride.pricingType === 'fixed' ? ride.price : undefined;
+
+  if (ride.pricingType === 'per_km') {
+    const [startLng, startLat] = pickupLocation.coordinates;
+    const [endLng, endLat] = dropoffLocation.coordinates;
+    const route = await getRouteSummary({ startLng, startLat, endLng, endLat });
+    fare = Number(((route.distanceMeters / 1000) * ride.price).toFixed(2));
+  }
+
   const request = await RideRequest.create({
     ride: rideId,
     rider: req.user._id,
     pickupLocation,
     dropoffLocation,
-    fare: ride.pricingType === 'fixed' ? ride.price : undefined,
+    fare,
   });
 
   getIO().to(`user:${ride.driver.toString()}`).emit('ride:request:new', request);

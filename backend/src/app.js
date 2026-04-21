@@ -3,6 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const rideRoutes = require('./routes/ride.routes');
 const rideRequestRoutes = require('./routes/rideRequest.routes');
+const mapRoutes = require('./routes/map.routes');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/api/health', (_, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/rides', rideRoutes);
 app.use('/api/ride-requests', rideRequestRoutes);
+app.use('/api/maps', mapRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

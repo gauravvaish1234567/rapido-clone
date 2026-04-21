@@ -6,7 +6,9 @@ Production-oriented MVP with:
 - **Database**: MongoDB + Mongoose
 - **Auth**: JWT
 - **Realtime**: Socket.io
-- **Maps-ready**: Google Maps API key support via env vars
+- **Maps/Distance (Free APIs)**:
+  - **OSRM public API** for bicycle route distance/time
+  - **OpenStreetMap tiles** for map rendering support
 
 ## Folder Structure
 
@@ -42,7 +44,7 @@ Production-oriented MVP with:
 
 ## Setup Instructions
 
-## 1) Backend setup
+### 1) Backend setup
 
 ```bash
 cd backend
@@ -53,7 +55,7 @@ npm run dev
 
 Backend default: `http://localhost:5000`
 
-## 2) Frontend setup
+### 2) Frontend setup
 
 ```bash
 cd frontend
@@ -64,7 +66,7 @@ npm run dev
 
 Frontend default: `http://localhost:5173`
 
-## 3) MongoDB
+### 3) MongoDB
 
 Run local MongoDB or provide cloud URI in `backend/.env`:
 
@@ -89,6 +91,11 @@ MONGO_URI=mongodb://localhost:27017/bikepool
 - `PATCH /api/ride-requests/:requestId/status` (driver updates status)
 - `GET /api/ride-requests/my` (rider request history)
 
+### Maps (Free)
+- `GET /api/maps/route-metrics?startLng=&startLat=&endLng=&endLat=`
+  - Uses **OSRM** (public/free) bicycle routing
+  - Returns `distanceMeters` and `durationSeconds`
+
 ## Core Flow
 1. Signup/Login to get JWT.
 2. Driver posts ride from A → B with time and pricing.
@@ -104,7 +111,14 @@ MONGO_URI=mongodb://localhost:27017/bikepool
 - Rider dropoff must be within `MATCH_RADIUS_KM` of ride destination.
 - Basic direction alignment approximated by start+destination pair.
 
+## Free Map/Geocoding Alternatives
+If you want to avoid Google Maps entirely:
+- Routing + distance: **OSRM** / **OpenRouteService**
+- Map tiles: **OpenStreetMap**
+- Geocoding: **Nominatim** (or self-hosted)
+
 ## Notes for Production Hardening
 - Add request validation (Joi/Zod), rate limiting, helmet, logging.
-- Integrate Google Directions API polyline comparison for stronger route similarity.
+- Add stronger route similarity checks using polyline overlap and heading similarity.
 - Add payments, dispute handling, notifications, and admin moderation.
+- For scale/reliability, move from public OSRM endpoint to self-hosted or paid SLA provider.

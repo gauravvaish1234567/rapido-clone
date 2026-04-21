@@ -20,7 +20,7 @@ export default function PostRidePage() {
   return (
     <section className="card">
       <h1>Post Ride</h1>
-      <p className="muted">For MVP we accept coordinates directly. Google Maps Places autocomplete can be added with your API key.</p>
+      <p className="muted">For MVP we accept coordinates directly. You can integrate free geocoding/routing (OSRM + Nominatim + OpenStreetMap) in production.</p>
       <form onSubmit={submit} className="stack">
         <input type="datetime-local" onChange={(e) => setForm({ ...form, time: e.target.value })} required />
         <select onChange={(e) => setForm({ ...form, pricingType: e.target.value })}>
