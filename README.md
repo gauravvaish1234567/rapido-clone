@@ -60,6 +60,7 @@ Backend default: `http://localhost:5000`
 ```bash
 cd frontend
 cp .env.example .env
+# set VITE_GOOGLE_MAPS_API_KEY in .env
 npm install
 npm run dev
 ```
@@ -96,7 +97,7 @@ MONGO_URI=mongodb://localhost:27017/bikepool
   - Uses **OSRM** (public/free) bicycle routing
   - Returns `distanceMeters` and `durationSeconds`
 
-- Frontend supports loading Google Maps previews when users click Start/Destination (and Pickup/Dropoff) location actions.
+- Frontend includes interactive Google Maps: users can search places, use current location, and click the map to set Start/Destination and Pickup/Dropoff points.
 
 ## Core Flow
 1. Signup/Login to get JWT.

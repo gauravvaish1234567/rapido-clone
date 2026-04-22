@@ -33,3 +33,8 @@ button { background: #0f766e; color: #fff; border: none; cursor: pointer; }
 .muted { color: #667085; }
 
 .map-preview { background: #f8fafc; padding: 8px; border: 1px solid #e2e8f0; border-radius: 10px; }
+
+.map-editor { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 10px; }
+.map-canvas { height: 280px; border-radius: 8px; margin-top: 8px; }
+.map-coords input { flex: 1; }
+.error-text { color: #b42318; margin: 4px 0; }

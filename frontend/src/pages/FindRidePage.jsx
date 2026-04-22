@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import client from '../api/client';
-import LocationMapPreview from '../components/LocationMapPreview';
+import InteractiveGoogleMap from '../components/InteractiveGoogleMap';
 
 export default function FindRidePage() {
   const [rides, setRides] = useState([]);
-  const [showPickupMap, setShowPickupMap] = useState(false);
-  const [showDropoffMap, setShowDropoffMap] = useState(false);
   const [filters, setFilters] = useState({
     pickupAddress: 'San Francisco',
     pickupLat: 37.7749,
@@ -14,6 +12,24 @@ export default function FindRidePage() {
     dropoffLat: 37.8044,
     dropoffLng: -122.2711,
   });
+
+  const setPickup = (coords, address) => {
+    setFilters({
+      ...filters,
+      pickupLat: coords.lat,
+      pickupLng: coords.lng,
+      pickupAddress: address || filters.pickupAddress,
+    });
+  };
+
+  const setDropoff = (coords, address) => {
+    setFilters({
+      ...filters,
+      dropoffLat: coords.lat,
+      dropoffLng: coords.lng,
+      dropoffAddress: address || filters.dropoffAddress,
+    });
+  };
 
   const search = async () => {
     const { data } = await client.get('/rides/search', {
@@ -48,63 +64,41 @@ export default function FindRidePage() {
     <section>
       <h1>Find Ride</h1>
       <div className="card stack">
-        <h3>Pickup</h3>
-        <input
-          placeholder="Pickup address"
-          value={filters.pickupAddress}
-          onChange={(e) => setFilters({ ...filters, pickupAddress: e.target.value })}
+        <InteractiveGoogleMap
+          title="Pickup Location"
+          lat={filters.pickupLat}
+          lng={filters.pickupLng}
+          address={filters.pickupAddress}
+          onLocationChange={setPickup}
         />
-        <div className="row">
-          <input
-            type="number"
-            step="any"
-            placeholder="Pickup latitude"
-            value={filters.pickupLat}
-            onChange={(e) => setFilters({ ...filters, pickupLat: Number(e.target.value) })}
-          />
-          <input
-            type="number"
-            step="any"
-            placeholder="Pickup longitude"
-            value={filters.pickupLng}
-            onChange={(e) => setFilters({ ...filters, pickupLng: Number(e.target.value) })}
-          />
-        </div>
-        <button type="button" onClick={() => setShowPickupMap((prev) => !prev)}>
-          {showPickupMap ? 'Hide Pickup Map' : 'Show Pickup on Google Maps'}
-        </button>
-        {showPickupMap && (
-          <LocationMapPreview label="Pickup point" lat={filters.pickupLat} lng={filters.pickupLng} />
-        )}
 
-        <h3>Dropoff</h3>
-        <input
-          placeholder="Dropoff address"
-          value={filters.dropoffAddress}
-          onChange={(e) => setFilters({ ...filters, dropoffAddress: e.target.value })}
-        />
-        <div className="row">
+        <div className="row map-coords">
           <input
-            type="number"
-            step="any"
-            placeholder="Dropoff latitude"
-            value={filters.dropoffLat}
-            onChange={(e) => setFilters({ ...filters, dropoffLat: Number(e.target.value) })}
+            placeholder="Pickup address"
+            value={filters.pickupAddress}
+            onChange={(e) => setFilters({ ...filters, pickupAddress: e.target.value })}
           />
-          <input
-            type="number"
-            step="any"
-            placeholder="Dropoff longitude"
-            value={filters.dropoffLng}
-            onChange={(e) => setFilters({ ...filters, dropoffLng: Number(e.target.value) })}
-          />
+          <input value={filters.pickupLat} readOnly />
+          <input value={filters.pickupLng} readOnly />
         </div>
-        <button type="button" onClick={() => setShowDropoffMap((prev) => !prev)}>
-          {showDropoffMap ? 'Hide Dropoff Map' : 'Show Dropoff on Google Maps'}
-        </button>
-        {showDropoffMap && (
-          <LocationMapPreview label="Dropoff point" lat={filters.dropoffLat} lng={filters.dropoffLng} />
-        )}
+
+        <InteractiveGoogleMap
+          title="Dropoff Location"
+          lat={filters.dropoffLat}
+          lng={filters.dropoffLng}
+          address={filters.dropoffAddress}
+          onLocationChange={setDropoff}
+        />
+
+        <div className="row map-coords">
+          <input
+            placeholder="Dropoff address"
+            value={filters.dropoffAddress}
+            onChange={(e) => setFilters({ ...filters, dropoffAddress: e.target.value })}
+          />
+          <input value={filters.dropoffLat} readOnly />
+          <input value={filters.dropoffLng} readOnly />
+        </div>
 
         <button onClick={search}>Search nearby matching rides</button>
       </div>
