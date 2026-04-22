@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import client from '../api/client';
+import LocationMapPreview from '../components/LocationMapPreview';
 
 export default function PostRidePage() {
   const [message, setMessage] = useState('');
+  const [showStartMap, setShowStartMap] = useState(false);
+  const [showDestinationMap, setShowDestinationMap] = useState(false);
   const [form, setForm] = useState({
     startLocation: { type: 'Point', coordinates: [-122.4194, 37.7749], address: 'San Francisco' },
     destination: { type: 'Point', coordinates: [-122.2711, 37.8044], address: 'Oakland' },
@@ -38,7 +41,7 @@ export default function PostRidePage() {
   return (
     <section className="card">
       <h1>Post Ride</h1>
-      <p className="muted">Set exact start and destination coordinates for your route.</p>
+      <p className="muted">Set exact start and destination coordinates for your route. Click a location button to load Google Map preview.</p>
       <form onSubmit={submit} className="stack">
         <h3>Start Location</h3>
         <input
@@ -65,6 +68,16 @@ export default function PostRidePage() {
             required
           />
         </div>
+        <button type="button" onClick={() => setShowStartMap((prev) => !prev)}>
+          {showStartMap ? 'Hide Start Map' : 'Show Start on Google Maps'}
+        </button>
+        {showStartMap && (
+          <LocationMapPreview
+            label="Start point"
+            lat={form.startLocation.coordinates[1]}
+            lng={form.startLocation.coordinates[0]}
+          />
+        )}
 
         <h3>Destination</h3>
         <input
@@ -91,6 +104,16 @@ export default function PostRidePage() {
             required
           />
         </div>
+        <button type="button" onClick={() => setShowDestinationMap((prev) => !prev)}>
+          {showDestinationMap ? 'Hide Destination Map' : 'Show Destination on Google Maps'}
+        </button>
+        {showDestinationMap && (
+          <LocationMapPreview
+            label="Destination point"
+            lat={form.destination.coordinates[1]}
+            lng={form.destination.coordinates[0]}
+          />
+        )}
 
         <input type="datetime-local" onChange={(e) => setForm({ ...form, time: e.target.value })} required />
         <select onChange={(e) => setForm({ ...form, pricingType: e.target.value })}>

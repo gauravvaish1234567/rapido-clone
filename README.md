@@ -96,6 +96,8 @@ MONGO_URI=mongodb://localhost:27017/bikepool
   - Uses **OSRM** (public/free) bicycle routing
   - Returns `distanceMeters` and `durationSeconds`
 
+- Frontend supports loading Google Maps previews when users click Start/Destination (and Pickup/Dropoff) location actions.
+
 ## Core Flow
 1. Signup/Login to get JWT.
 2. Driver posts ride from A → B with time and pricing.
