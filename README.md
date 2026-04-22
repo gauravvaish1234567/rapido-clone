@@ -125,3 +125,7 @@ If you want to avoid Google Maps entirely:
 - Add stronger route similarity checks using polyline overlap and heading similarity.
 - Add payments, dispute handling, notifications, and admin moderation.
 - For scale/reliability, move from public OSRM endpoint to self-hosted or paid SLA provider.
+
+### Auth troubleshooting
+- If you see `401 Unauthorized` on protected routes (e.g. posting rides), log out and log in again so a fresh JWT is stored.
+- Ensure `JWT_SECRET` is set in `backend/.env` and `VITE_API_URL` points to your backend `.../api` base URL.
